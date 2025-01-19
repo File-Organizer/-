@@ -43,6 +43,145 @@
     })(document, window, 'Chatra');
   </script>
 
+  <!-- CSS for partial-fill slider and Zoom Functionality -->
+  <style>
+    /* Existing styles remain unchanged */
+
+    .range-wrap {
+      position: relative;
+      width: 100%;
+      height: 1.25rem; /* enough space for track + thumb */
+    }
+    .range-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 0.5rem;
+      background: #e2e8f0; /* gray-200 */
+      border-radius: 9999px;
+      transform: translateY(-50%);
+    }
+    .range-fill {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 0.5rem;
+      background: #2563eb; /* blue-600 */
+      border-radius: 9999px;
+      transform: translateY(-50%);
+      width: 0; /* updated dynamically */
+    }
+    input[type="range"].slider {
+      -webkit-appearance: none;
+      appearance: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1.25rem;
+      background: transparent;
+      pointer-events: auto;
+    }
+    input[type="range"].slider:focus {
+      outline: none;
+    }
+    /* Chrome/Edge/Safari */
+    input[type="range"].slider::-webkit-slider-runnable-track {
+      background: transparent;
+      height: 0.5rem;
+      border-radius: 9999px;
+    }
+    input[type="range"].slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 1rem;
+      width: 1rem;
+      margin-top: -0.25rem;
+      background: #2563eb; /* blue-600 */
+      border-radius: 50%;
+      border: 2px solid #fff; /* white ring */
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    /* Firefox */
+    input[type="range"].slider::-moz-range-track {
+      background: transparent;
+      height: 0.5rem;
+      border-radius: 9999px;
+    }
+    input[type="range"].slider::-moz-range-thumb {
+      height: 1rem;
+      width: 1rem;
+      background: #2563eb;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    /* Responsive Video Styling */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      padding-top: 25px;
+      height: 0;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ======= New Styles for Zoom Functionality ======= */
+    /* Zoom Overlay Styles */
+    .zoom-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+
+    .zoom-overlay.active {
+      display: flex;
+    }
+
+    .zoom-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: zoomIn 0.3s;
+    }
+
+    .zoom-overlay .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #fff;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .zoom-overlay .close-btn:hover {
+      color: #ddd;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    /* ======= End of New Styles ======= */
+  </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
   <div class="container mx-auto px-4 py-16">
@@ -196,14 +335,14 @@
           <img
             src="https://raw.githubusercontent.com/File-Organizer/-/refs/heads/main/screen.PNG"
             alt="Screenshot 1"
-            class="w-full h-auto rounded-lg shadow-md"
+            class="w-full h-auto rounded-lg shadow-md zoomable cursor-pointer"
           >
         </div>
         <div class="bg-white p-6 rounded-xl shadow-lg overflow-hidden">
           <img
             src="https://raw.githubusercontent.com/File-Organizer/-/refs/heads/main/screen2.PNG"
             alt="Screenshot 2"
-            class="w-full h-auto rounded-lg shadow-md"
+            class="w-full h-auto rounded-lg shadow-md zoomable cursor-pointer"
           >
         </div>
       </div>
@@ -315,7 +454,7 @@
           <img
             src="https://github.com/File-Organizer/-/blob/main/review.PNG?raw=true"
             alt="Reddit review 1"
-            class="w-full h-auto rounded-lg shadow-md"
+            class="w-full h-auto rounded-lg shadow-md zoomable cursor-pointer"
           />
         </div>
         <div class="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
@@ -325,7 +464,7 @@
           <img
             src="https://github.com/File-Organizer/-/blob/main/review2.jpg?raw=true"
             alt="Reddit review 2"
-            class="w-full h-auto rounded-lg shadow-md"
+            class="w-full h-auto rounded-lg shadow-md zoomable cursor-pointer"
           />
         </div>
         <div class="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
@@ -335,7 +474,7 @@
           <img
             src="https://github.com/File-Organizer/-/blob/main/review3.PNG?raw=true"
             alt="Reddit review 3"
-            class="w-full h-auto rounded-lg shadow-md"
+            class="w-full h-auto rounded-lg shadow-md zoomable cursor-pointer"
           />
         </div>
       </div>
@@ -409,6 +548,52 @@
     <p>© 2024 AI File Organizer. All rights reserved.</p>
   </footer>
 
+  <!-- ======= Zoom Overlay HTML ======= -->
+  <div class="zoom-overlay" id="zoom-overlay">
+    <span class="close-btn" id="zoom-close">&times;</span>
+    <img src="" alt="Zoomed Image" id="zoom-img">
+  </div>
+  <!-- ======= End of Zoom Overlay HTML ======= -->
+
+  <!-- Scripts -->
+  <script>
+    // Function to handle image zoom
+    document.addEventListener('DOMContentLoaded', function() {
+      const zoomOverlay = document.getElementById('zoom-overlay');
+      const zoomImg = document.getElementById('zoom-img');
+      const zoomClose = document.getElementById('zoom-close');
+
+      // Attach click event to all images with class 'zoomable'
+      const zoomableImages = document.querySelectorAll('.zoomable');
+      zoomableImages.forEach(function(img) {
+        img.addEventListener('click', function() {
+          zoomImg.src = this.src;
+          zoomImg.alt = this.alt;
+          zoomOverlay.classList.add('active');
+        });
+      });
+
+      // Close the overlay when the close button is clicked
+      zoomClose.addEventListener('click', function(e) {
+        zoomOverlay.classList.remove('active');
+      });
+
+      // Close the overlay when clicking outside the image
+      zoomOverlay.addEventListener('click', function(e) {
+        if (e.target === zoomOverlay) {
+          zoomOverlay.classList.remove('active');
+        }
+      });
+
+      // Optional: Close overlay on 'Escape' key press
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && zoomOverlay.classList.contains('active')) {
+          zoomOverlay.classList.remove('active');
+        }
+      });
+    });
+  </script>
+
   <!-- ========================= -->
   <!-- React and ReactDOM -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -418,91 +603,7 @@
 
   <!-- CSS for partial-fill slider -->
   <style>
-    .range-wrap {
-      position: relative;
-      width: 100%;
-      height: 1.25rem; /* enough space for track + thumb */
-    }
-    .range-track {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 0.5rem;
-      background: #e2e8f0; /* gray-200 */
-      border-radius: 9999px;
-      transform: translateY(-50%);
-    }
-    .range-fill {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      height: 0.5rem;
-      background: #2563eb; /* blue-600 */
-      border-radius: 9999px;
-      transform: translateY(-50%);
-      width: 0; /* updated dynamically */
-    }
-    input[type="range"].slider {
-      -webkit-appearance: none;
-      appearance: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1.25rem;
-      background: transparent;
-      pointer-events: auto;
-    }
-    input[type="range"].slider:focus {
-      outline: none;
-    }
-    /* Chrome/Edge/Safari */
-    input[type="range"].slider::-webkit-slider-runnable-track {
-      background: transparent;
-      height: 0.5rem;
-      border-radius: 9999px;
-    }
-    input[type="range"].slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 1rem;
-      width: 1rem;
-      margin-top: -0.25rem;
-      background: #2563eb; /* blue-600 */
-      border-radius: 50%;
-      border: 2px solid #fff; /* white ring */
-      box-shadow: 0 0 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-    /* Firefox */
-    input[type="range"].slider::-moz-range-track {
-      background: transparent;
-      height: 0.5rem;
-      border-radius: 9999px;
-    }
-    input[type="range"].slider::-moz-range-thumb {
-      height: 1rem;
-      width: 1rem;
-      background: #2563eb;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      box-shadow: 0 0 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-    /* Responsive Video Styling */
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 */
-      padding-top: 25px;
-      height: 0;
-    }
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
+    /* Your existing styles are already included above */
   </style>
 
   <!-- ROI Calculator Script -->
