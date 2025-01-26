@@ -43,97 +43,8 @@
     })(document, window, 'Chatra');
   </script>
 
-  <!-- CSS for partial-fill slider and Zoom Functionality -->
+  <!-- CSS for Zoom Functionality -->
   <style>
-    /* Existing styles remain unchanged */
-
-    .range-wrap {
-      position: relative;
-      width: 100%;
-      height: 1.25rem; /* enough space for track + thumb */
-    }
-    .range-track {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 0.5rem;
-      background: #e2e8f0; /* gray-200 */
-      border-radius: 9999px;
-      transform: translateY(-50%);
-    }
-    .range-fill {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      height: 0.5rem;
-      background: #2563eb; /* blue-600 */
-      border-radius: 9999px;
-      transform: translateY(-50%);
-      width: 0; /* updated dynamically */
-    }
-    input[type="range"].slider {
-      -webkit-appearance: none;
-      appearance: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1.25rem;
-      background: transparent;
-      pointer-events: auto;
-    }
-    input[type="range"].slider:focus {
-      outline: none;
-    }
-    /* Chrome/Edge/Safari */
-    input[type="range"].slider::-webkit-slider-runnable-track {
-      background: transparent;
-      height: 0.5rem;
-      border-radius: 9999px;
-    }
-    input[type="range"].slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 1rem;
-      width: 1rem;
-      margin-top: -0.25rem;
-      background: #2563eb; /* blue-600 */
-      border-radius: 50%;
-      border: 2px solid #fff; /* white ring */
-      box-shadow: 0 0 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-    /* Firefox */
-    input[type="range"].slider::-moz-range-track {
-      background: transparent;
-      height: 0.5rem;
-      border-radius: 9999px;
-    }
-    input[type="range"].slider::-moz-range-thumb {
-      height: 1rem;
-      width: 1rem;
-      background: #2563eb;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      box-shadow: 0 0 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-    /* Responsive Video Styling */
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 */
-      padding-top: 25px;
-      height: 0;
-    }
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* ======= New Styles for Zoom Functionality ======= */
     /* Zoom Overlay Styles */
     .zoom-overlay {
       position: fixed;
@@ -180,7 +91,6 @@
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-    /* ======= End of New Styles ======= */
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -258,7 +168,7 @@
       </div>
     </div>
 
-    <!-- Supported File Types Section (NEW) -->
+    <!-- Supported File Types Section -->
     <div class="mb-16">
       <h2 class="text-3xl font-bold text-center mb-8">Supported File Types</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -305,7 +215,7 @@
         <!-- Presentations -->
         <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
           <div class="flex items-center mb-4">
-            <i class="fas fa-slideshare text-purple-600 text-3xl mr-3"></i>
+            <i class="fas fa-file-powerpoint text-purple-600 text-3xl mr-3"></i>
             <h3 class="text-xl font-semibold">Presentations</h3>
           </div>
           <ul class="text-gray-600 list-disc list-inside">
@@ -369,6 +279,12 @@
       </div>
     </div>
 
+    <!-- AI File Organizer Demo Section (Replaced with User's Demo) -->
+    <div class="mb-16">
+      <h2 class="text-3xl font-bold text-center mb-8">AI File Organizer Demo</h2>
+      <div id="demo-root"></div>
+    </div>
+
     <!-- FAQ Section -->
     <div class="mb-16">
       <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
@@ -392,8 +308,6 @@
         </p>
       </div>
     </div>
-
-    <!-- (Demo Video Section Removed) -->
 
     <!-- What Our Customers Are Saying -->
     <div class="mb-16">
@@ -585,11 +499,6 @@
   <!-- Babel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 
-  <!-- CSS for partial-fill slider -->
-  <style>
-    /* Your existing styles are already included above */
-  </style>
-
   <!-- ROI Calculator Script -->
   <script type="text/babel">
     const { useState } = React;
@@ -598,12 +507,12 @@
     function RangeSlider({ min, max, value, onChange }) {
       const fraction = ((value - min) / (max - min)) * 100;
       return (
-        <div className="range-wrap">
-          <div className="range-track"></div>
-          <div className="range-fill" style={{ width: fraction + '%' }}></div>
+        <div className="range-wrap relative w-full h-5">
+          <div className="range-track absolute top-1/2 left-0 w-full h-2 bg-gray-200 rounded-full transform -translate-y-1/2"></div>
+          <div className="range-fill absolute top-1/2 left-0 h-2 bg-blue-600 rounded-full transform -translate-y-1/2" style={{ width: `${fraction}%` }}></div>
           <input
             type="range"
-            className="slider"
+            className="slider absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
             min={min}
             max={max}
             value={value}
@@ -715,5 +624,194 @@
     // Render the ROI Calculator
     ReactDOM.render(<ROICalculator />, document.getElementById('roi-calculator'));
   </script>
+
+  <!-- ======= File Organizer Demo Script ======= -->
+  <script type="text/babel">
+    const { useState, useRef } = React;
+
+    const FileOrganizerDemo = () => {
+      const initialFiles = [
+        { id: 1, name: 'IMG_20230515_140322.jpg', type: 'image', path: '/DCIM/Camera/IMG_20230515_140322.jpg' },
+        { id: 2, name: 'DOC_20231121.pdf', type: 'pdf', path: '/Downloads/DOC_20231121.pdf' },
+        { id: 3, name: 'scan0001.pdf', type: 'pdf', path: '/Documents/scan0001.pdf' },
+        { id: 4, name: 'financials.xlsx', type: 'spreadsheet', path: '/Downloads/financials.xlsx' },
+        { id: 5, name: 'notes.txt', type: 'document', path: '/Desktop/notes.txt' },
+        { id: 6, name: 'presentation.pptx', type: 'presentation', path: '/Work/presentation.pptx' }
+      ];
+
+      const [organizedFiles, setOrganizedFiles] = useState({});
+      const [isOrganizing, setIsOrganizing] = useState(false);
+      const [progress, setProgress] = useState(0);
+
+      const organizeFiles = () => {
+        setIsOrganizing(true);
+        setProgress(0);
+        
+        const interval = setInterval(() => {
+          setProgress(prev => Math.min(prev + 20, 100));
+        }, 300);
+
+        setTimeout(() => {
+          clearInterval(interval);
+          setOrganizedFiles({
+            'Vacation Photos': [
+              { 
+                ...initialFiles[0], 
+                newPath: '/Photos/Vacations/Beach_Day_2023.jpg',
+                newName: 'Beach_Day_2023.jpg'
+              }
+            ],
+            'Work Documents': [
+              { 
+                ...initialFiles[3], 
+                newPath: '/Work/Finance/Q3_Report.xlsx',
+                newName: 'Q3_Financial_Report.xlsx'
+              },
+              { 
+                ...initialFiles[5], 
+                newPath: '/Work/Presentations/Client_Meeting.pptx',
+                newName: 'Client_Meeting.pptx'
+              }
+            ],
+            'Personal': [
+              { 
+                ...initialFiles[1], 
+                newPath: '/Personal/Documents/Contract.pdf',
+                newName: 'Contract_Agreement.pdf'
+              },
+              { 
+                ...initialFiles[2], 
+                newPath: '/Personal/Scans/Utility_Bill.pdf',
+                newName: 'Utility_Bill_Nov_2023.pdf'
+              }
+            ],
+            'Meeting Notes': [
+              { 
+                ...initialFiles[4], 
+                newPath: '/Work/Meetings/Project_Brainstorm_Notes.txt',
+                newName: 'Project_Brainstorm_Notes.txt'
+              }
+            ]
+          });
+          setIsOrganizing(false);
+          setProgress(100);
+        }, 2000);
+      };
+
+      const FileIcon = ({ type }) => {
+        const icons = {
+          image: 'fa-image text-blue-500',
+          pdf: 'fa-file-pdf text-red-500',
+          spreadsheet: 'fa-table text-green-500',
+          document: 'fa-file-alt text-purple-500',
+          presentation: 'fa-presentation text-orange-500'
+        };
+        return <i className={`fas ${icons[type]} text-lg mr-3`} />;
+      };
+
+      return (
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
+          <div className="mb-8 text-center">
+            <button 
+              onClick={organizeFiles}
+              disabled={isOrganizing}
+              className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                isOrganizing ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+              } text-white`}
+            >
+              {isOrganizing ? (
+                <>
+                  <i className="fas fa-spinner animate-spin mr-2"></i>
+                  Organizing...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-magic mr-2"></i>
+                  Start AI Organization
+                </>
+              )}
+            </button>
+            
+            {isOrganizing && (
+              <div className="mt-4">
+                <div className="h-2 bg-gray-200 rounded-full">
+                  <div 
+                    className="h-full bg-blue-500 rounded-full transition-all duration-300" 
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Analyzing files... {progress}% complete
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Original Files */}
+            <div className="border-2 border-dashed border-gray-200 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                <i className="fas fa-folder-open mr-2 text-blue-500"></i>
+                Original Files
+              </h3>
+              <div className="space-y-2 h-64 overflow-y-auto">
+                {initialFiles.map(file => (
+                  <div key={file.id} className="flex items-center p-2 bg-gray-50 rounded mb-2">
+                    <FileIcon type={file.type} />
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">{file.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{file.path}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Organized Structure */}
+            <div className="border-2 border-dashed border-green-200 p-4 rounded-lg bg-green-50">
+              <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                <i className="fas fa-folder-plus mr-2 text-green-500"></i>
+                Organized Structure
+              </h3>
+              <div className="space-y-2 h-64 overflow-y-auto">
+                {Object.entries(organizedFiles).map(([category, files]) => (
+                  <div key={category} className="mb-4">
+                    <div className="flex items-center mb-2 bg-white p-2 rounded-t">
+                      <i className={`fas ${
+                        category === 'Meeting Notes' ? 'fa-clipboard-list' : 'fa-folder'
+                      } mr-2 text-yellow-500`}></i>
+                      <span className="font-medium capitalize">{category}</span>
+                    </div>
+                    {files.map(file => (
+                      <div key={file.id} className="flex items-center p-2 bg-white rounded mb-2">
+                        <FileIcon type={file.type} />
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">{file.newName}</p>
+                          <p className="text-xs text-gray-500 truncate">{file.newPath}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+                
+                {Object.keys(organizedFiles).length === 0 && (
+                  <div className="text-center text-gray-400 py-6">
+                    <i className="fas fa-robot text-3xl mb-3"></i>
+                    <p>Click above to see AI organization</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      // Note: ReactDOM.render is moved outside the component
+    };
+
+    // Render the File Organizer Demo
+    ReactDOM.render(<FileOrganizerDemo />, document.getElementById('demo-root'));
+  </script>
+  <!-- ======= End of File Organizer Demo Script ======= -->
 </body>
 </html>
