@@ -43,8 +43,97 @@
     })(document, window, 'Chatra');
   </script>
 
-  <!-- CSS for Zoom Functionality -->
+  <!-- CSS for partial-fill slider and other existing styles -->
   <style>
+    /* Existing styles remain unchanged */
+
+    .range-wrap {
+      position: relative;
+      width: 100%;
+      height: 1.25rem; /* 20px: enough space for track + thumb */
+    }
+    .range-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 0.5rem; /* 8px */
+      background: #e2e8f0; /* gray-200 */
+      border-radius: 9999px;
+      transform: translateY(-50%);
+    }
+    .range-fill {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 0.5rem; /* 8px */
+      background: #2563eb; /* blue-600 */
+      border-radius: 9999px;
+      transform: translateY(-50%);
+      width: 0; /* updated dynamically */
+    }
+    input[type="range"].slider {
+      -webkit-appearance: none;
+      appearance: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1.25rem;
+      background: transparent;
+      pointer-events: auto;
+    }
+    input[type="range"].slider:focus {
+      outline: none;
+    }
+    /* Chrome/Edge/Safari */
+    input[type="range"].slider::-webkit-slider-runnable-track {
+      background: transparent;
+      height: 0.5rem;
+      border-radius: 9999px;
+    }
+    input[type="range"].slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 1rem;
+      width: 1rem;
+      margin-top: -0.25rem; /* Centers the thumb vertically */
+      background: #2563eb; /* blue-600 */
+      border-radius: 50%;
+      border: 2px solid #fff; /* white ring */
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    /* Firefox */
+    input[type="range"].slider::-moz-range-track {
+      background: transparent;
+      height: 0.5rem;
+      border-radius: 9999px;
+    }
+    input[type="range"].slider::-moz-range-thumb {
+      height: 1rem;
+      width: 1rem;
+      background: #2563eb;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    /* Responsive Video Styling */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      padding-top: 25px;
+      height: 0;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ======= New Styles for Zoom Functionality ======= */
     /* Zoom Overlay Styles */
     .zoom-overlay {
       position: fixed;
@@ -57,7 +146,6 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      transition: opacity 0.3s ease;
     }
 
     .zoom-overlay.active {
@@ -69,7 +157,6 @@
       max-height: 90%;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      animation: zoomIn 0.3s;
     }
 
     .zoom-overlay .close-btn {
@@ -86,11 +173,7 @@
     .zoom-overlay .close-btn:hover {
       color: #ddd;
     }
-
-    @keyframes zoomIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    /* ======= End of New Styles ======= */
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -168,7 +251,7 @@
       </div>
     </div>
 
-    <!-- Supported File Types Section -->
+    <!-- Supported File Types Section (NEW) -->
     <div class="mb-16">
       <h2 class="text-3xl font-bold text-center mb-8">Supported File Types</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -215,7 +298,7 @@
         <!-- Presentations -->
         <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
           <div class="flex items-center mb-4">
-            <i class="fas fa-file-powerpoint text-purple-600 text-3xl mr-3"></i>
+            <i class="fas fa-slideshare text-purple-600 text-3xl mr-3"></i>
             <h3 class="text-xl font-semibold">Presentations</h3>
           </div>
           <ul class="text-gray-600 list-disc list-inside">
@@ -443,7 +526,7 @@
 
   <!-- Footer -->
   <footer class="container mx-auto px-4 py-8 text-center text-gray-600">
-    <p>© 2024 AI File Organizer. All rights reserved.</p>
+    <p>© 2025 AI File Organizer. All rights reserved.</p>
   </footer>
 
   <!-- ======= Zoom Overlay HTML ======= -->
@@ -466,7 +549,6 @@
       zoomableImages.forEach(function(img) {
         img.addEventListener('click', function() {
           zoomImg.src = this.src;
-          zoomImg.alt = this.alt;
           zoomOverlay.classList.add('active');
         });
       });
@@ -476,7 +558,7 @@
         zoomOverlay.classList.remove('active');
       });
 
-      // Close the overlay when clicking outside the image
+      // Close the overlay when clicking outside the zoomed image
       zoomOverlay.addEventListener('click', function(e) {
         if (e.target === zoomOverlay) {
           zoomOverlay.classList.remove('active');
@@ -507,12 +589,12 @@
     function RangeSlider({ min, max, value, onChange }) {
       const fraction = ((value - min) / (max - min)) * 100;
       return (
-        <div className="range-wrap relative w-full h-5">
-          <div className="range-track absolute top-1/2 left-0 w-full h-2 bg-gray-200 rounded-full transform -translate-y-1/2"></div>
-          <div className="range-fill absolute top-1/2 left-0 h-2 bg-blue-600 rounded-full transform -translate-y-1/2" style={{ width: `${fraction}%` }}></div>
+        <div className="range-wrap">
+          <div className="range-track"></div>
+          <div className="range-fill" style={{ width: fraction + '%' }}></div>
           <input
             type="range"
-            className="slider absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+            className="slider"
             min={min}
             max={max}
             value={value}
@@ -625,7 +707,8 @@
     ReactDOM.render(<ROICalculator />, document.getElementById('roi-calculator'));
   </script>
 
-  <!-- ======= File Organizer Demo Script ======= -->
+  <!-- ========================= -->
+  <!-- File Organizer Demo Script -->
   <script type="text/babel">
     const { useState, useRef } = React;
 
@@ -716,7 +799,7 @@
               onClick={organizeFiles}
               disabled={isOrganizing}
               className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
-                isOrganizing ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                isOrganizing ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
               } text-white`}
             >
               {isOrganizing ? (
